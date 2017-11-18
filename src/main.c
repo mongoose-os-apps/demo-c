@@ -25,6 +25,9 @@ static void net_cb(enum mgos_net_event ev,
       LOG(LL_INFO, ("%s", "Net got IP address"));
       break;
   }
+
+  (void) ev_data;
+  (void) arg;
 }
 
 static void button_cb(int pin, void *arg) {
