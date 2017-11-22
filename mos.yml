@@ -17,7 +17,6 @@ filesystem:
 
 config_schema:
   - ["mqtt.server", "iot.eclipse.org:1883"]
-  - ["i2c.enable", true]
   - ["pins", "o", {title: "Pins layout"}]
   - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
   - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
