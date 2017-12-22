@@ -9,8 +9,7 @@ static void led_timer_cb(void *arg) {
   (void) arg;
 }
 
-static void net_cb(enum mgos_net_event ev,
-                   const struct mgos_net_event_data *ev_data, void *arg) {
+static void net_cb(int ev, void *evd, void *arg) {
   switch (ev) {
     case MGOS_NET_EV_DISCONNECTED:
       LOG(LL_INFO, ("%s", "Net disconnected"));
@@ -26,7 +25,7 @@ static void net_cb(enum mgos_net_event ev,
       break;
   }
 
-  (void) ev_data;
+  (void) evd;
   (void) arg;
 }
 
@@ -54,7 +53,7 @@ enum mgos_app_init_result mgos_app_init(void) {
                                button_cb, NULL);
 
   /* Network connectivity events */
-  mgos_net_add_event_handler(net_cb, NULL);
+  mgos_event_add_group_handler(MGOS_EVENT_GRP_NET, net_cb, NULL);
 
   return MGOS_APP_INIT_SUCCESS;
 }
