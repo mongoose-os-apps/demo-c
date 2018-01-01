@@ -17,49 +17,9 @@ filesystem:
 
 config_schema:
   - ["mqtt.server", "iot.eclipse.org:1883"]
-  - ["pins", "o", {title: "Pins layout"}]
-  - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
-  - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
-
-conds:
-  - when: mos.platform == "esp32"
-    apply:
-      config_schema:
-        - ["pins.led", 21]
-        - ["pins.button", 0]
-  - when: mos.platform == "esp8266"
-    apply:
-      config_schema:
-        - ["pins.led", 2]
-        - ["pins.button", 0]
-  - when: mos.platform == "cc3200"
-    apply:
-      config_schema:
-        - ["pins.led", 64]
-        - ["pins.button", 15]
-  - when: mos.platform == "cc3220"
-    apply:
-      config_schema:
-        - ["pins.led", 64]
-        - ["pins.button", 15]
 
 libs:
-  - origin: https://github.com/mongoose-os-libs/aws
-  - origin: https://github.com/mongoose-os-libs/ca-bundle
-  - origin: https://github.com/mongoose-os-libs/dash
-  - origin: https://github.com/mongoose-os-libs/dht
-  - origin: https://github.com/mongoose-os-libs/http-server
-  - origin: https://github.com/mongoose-os-libs/i2c
-  - origin: https://github.com/mongoose-os-libs/ota-shadow
-  - origin: https://github.com/mongoose-os-libs/ota-http-client
-  - origin: https://github.com/mongoose-os-libs/ota-http-server
-  - origin: https://github.com/mongoose-os-libs/rpc-service-config
-  - origin: https://github.com/mongoose-os-libs/rpc-service-fs
-  - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  - origin: https://github.com/mongoose-os-libs/rpc-uart
-  - origin: https://github.com/mongoose-os-libs/shadow
-  - origin: https://github.com/mongoose-os-libs/sntp
-  - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/demo-bundle
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
