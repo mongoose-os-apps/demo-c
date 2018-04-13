@@ -49,7 +49,7 @@ enum mgos_app_init_result mgos_app_init(void) {
 
   /* Publish to MQTT on button press */
   mgos_gpio_set_button_handler(mgos_sys_config_get_pins_button(),
-                               MGOS_GPIO_PULL_UP, MGOS_GPIO_INT_EDGE_NEG, 200,
+                               MGOS_GPIO_PULL_UP, MGOS_GPIO_INT_EDGE_NEG, 20,
                                button_cb, NULL);
 
   /* Network connectivity events */
