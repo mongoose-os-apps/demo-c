@@ -44,7 +44,7 @@ static void button_cb(int pin, void *arg) {
 
 enum mgos_app_init_result mgos_app_init(void) {
   /* Blink built-in LED every second */
-  mgos_gpio_set_mode(mgos_sys_config_get_pins_led(), MGOS_GPIO_MODE_INPUT);
+  mgos_gpio_set_mode(mgos_sys_config_get_pins_led(), MGOS_GPIO_MODE_OUTPUT);
   mgos_set_timer(1000, MGOS_TIMER_REPEAT, led_timer_cb, NULL);
 
   /* Publish to MQTT on button press */
