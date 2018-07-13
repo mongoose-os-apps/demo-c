@@ -43,14 +43,33 @@ static void button_cb(int pin, void *arg) {
 }
 
 enum mgos_app_init_result mgos_app_init(void) {
+  char buf[8];
   /* Blink built-in LED every second */
-  mgos_gpio_set_mode(mgos_sys_config_get_pins_led(), MGOS_GPIO_MODE_INPUT);
-  mgos_set_timer(1000, MGOS_TIMER_REPEAT, led_timer_cb, NULL);
+  if (mgos_sys_config_get_pins_led() >= 0) {
+    LOG(LL_INFO,
+        ("LED pin %s", mgos_gpio_str(mgos_sys_config_get_pins_led(), buf)));
+    mgos_gpio_set_mode(mgos_sys_config_get_pins_led(), MGOS_GPIO_MODE_OUTPUT);
+    mgos_set_timer(1000, MGOS_TIMER_REPEAT, led_timer_cb, NULL);
+  }
 
   /* Publish to MQTT on button press */
-  mgos_gpio_set_button_handler(mgos_sys_config_get_pins_button(),
-                               MGOS_GPIO_PULL_UP, MGOS_GPIO_INT_EDGE_NEG, 20,
-                               button_cb, NULL);
+  if (mgos_sys_config_get_pins_button() >= 0) {
+    int btn_pin = mgos_sys_config_get_pins_button();
+    enum mgos_gpio_pull_type btn_pull;
+    enum mgos_gpio_int_mode btn_int_edge;
+    if (mgos_sys_config_get_pins_button_pull_up()) {
+      btn_pull = MGOS_GPIO_PULL_UP;
+      btn_int_edge = MGOS_GPIO_INT_EDGE_NEG;
+    } else {
+      btn_pull = MGOS_GPIO_PULL_DOWN;
+      btn_int_edge = MGOS_GPIO_INT_EDGE_POS;
+    }
+    LOG(LL_INFO,
+        ("Button pin %s, active %s", mgos_gpio_str(btn_pin, buf),
+         (mgos_sys_config_get_pins_button_pull_up() ? "low" : "high")));
+    mgos_gpio_set_button_handler(btn_pin, btn_pull, btn_int_edge, 20, button_cb,
+                                 NULL);
+  }
 
   /* Network connectivity events */
   mgos_event_add_group_handler(MGOS_EVENT_GRP_NET, net_cb, NULL);
