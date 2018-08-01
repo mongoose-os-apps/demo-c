@@ -78,7 +78,9 @@ static void button_cb(int pin, void *arg) {
               (unsigned long) mgos_get_heap_size(),
               (unsigned long) mgos_get_free_heap_size());
   bool res = mgos_mqtt_pub(topic, message, strlen(message), 1, false);
-  LOG(LL_INFO, ("Pin: %d, published: %s", pin, res ? "yes" : "no"));
+  char buf[8];
+  LOG(LL_INFO,
+      ("Pin: %s, published: %s", mgos_gpio_str(pin, buf), res ? "yes" : "no"));
   (void) arg;
 }
 
