@@ -1,5 +1,8 @@
 #include "mgos.h"
 #include "mgos_mqtt.h"
+#ifdef MGOS_HAVE_WIFI
+#include "mgos_wifi.h"
+#endif
 
 static void led_timer_cb(void *arg) {
   bool val = mgos_gpio_toggle(mgos_sys_config_get_pins_led());
@@ -28,6 +31,43 @@ static void net_cb(int ev, void *evd, void *arg) {
   (void) evd;
   (void) arg;
 }
+
+#ifdef MGOS_HAVE_WIFI
+static void wifi_cb(int ev, void *evd, void *arg) {
+  switch (ev) {
+    case MGOS_WIFI_EV_STA_DISCONNECTED:
+      LOG(LL_INFO, ("WiFi STA disconnected %p", arg));
+      break;
+    case MGOS_WIFI_EV_STA_CONNECTING:
+      LOG(LL_INFO, ("WiFi STA connecting %p", arg));
+      break;
+    case MGOS_WIFI_EV_STA_CONNECTED:
+      LOG(LL_INFO, ("WiFi STA connected %p", arg));
+      break;
+    case MGOS_WIFI_EV_STA_IP_ACQUIRED:
+      LOG(LL_INFO, ("WiFi STA IP acquired %p", arg));
+      break;
+    case MGOS_WIFI_EV_AP_STA_CONNECTED: {
+      struct mgos_wifi_ap_sta_connected_arg *aa =
+          (struct mgos_wifi_ap_sta_connected_arg *) evd;
+      LOG(LL_INFO, ("WiFi AP STA connected MAC %02x:%02x:%02x:%02x:%02x:%02x",
+                    aa->mac[0], aa->mac[1], aa->mac[2], aa->mac[3], aa->mac[4],
+                    aa->mac[5]));
+      break;
+    }
+    case MGOS_WIFI_EV_AP_STA_DISCONNECTED: {
+      struct mgos_wifi_ap_sta_disconnected_arg *aa =
+          (struct mgos_wifi_ap_sta_disconnected_arg *) evd;
+      LOG(LL_INFO,
+          ("WiFi AP STA disconnected MAC %02x:%02x:%02x:%02x:%02x:%02x",
+           aa->mac[0], aa->mac[1], aa->mac[2], aa->mac[3], aa->mac[4],
+           aa->mac[5]));
+      break;
+    }
+  }
+  (void) arg;
+}
+#endif /* MGOS_HAVE_WIFI */
 
 static void button_cb(int pin, void *arg) {
   char topic[100], message[100];
@@ -73,6 +113,10 @@ enum mgos_app_init_result mgos_app_init(void) {
 
   /* Network connectivity events */
   mgos_event_add_group_handler(MGOS_EVENT_GRP_NET, net_cb, NULL);
+
+#ifdef MGOS_HAVE_WIFI
+  mgos_event_add_group_handler(MGOS_WIFI_EV_BASE, wifi_cb, NULL);
+#endif
 
   return MGOS_APP_INIT_SUCCESS;
 }
