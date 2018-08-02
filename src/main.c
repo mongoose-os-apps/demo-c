@@ -5,7 +5,7 @@
 #endif
 
 static void led_timer_cb(void *arg) {
-  bool val = mgos_gpio_toggle(mgos_sys_config_get_pins_led());
+  bool val = 0;  // mgos_gpio_toggle(mgos_sys_config_get_pins_led());
   LOG(LL_INFO, ("%s uptime: %.2lf, RAM: %lu, %lu free", val ? "Tick" : "Tock",
                 mgos_uptime(), (unsigned long) mgos_get_heap_size(),
                 (unsigned long) mgos_get_free_heap_size()));
