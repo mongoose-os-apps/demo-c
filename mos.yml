@@ -19,6 +19,7 @@ config_schema:
   - ["mqtt.server", "iot.eclipse.org:1883"]
 
 libs:
+  - origin: https://github.com/mongoose-os-libs/boards
   - origin: https://github.com/mongoose-os-libs/demo-bundle
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
