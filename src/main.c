@@ -78,9 +78,8 @@ static void button_cb(int pin, void *arg) {
                             (unsigned long) mgos_get_heap_size(),
                             (unsigned long) mgos_get_free_heap_size());
   char buf[8];
-  int x = mgos_gpio_toggle(mgos_sys_config_get_board_led3_pin());
-  LOG(LL_INFO, ("Pin: %s, published: %s x %d", mgos_gpio_str(pin, buf),
-                res ? "yes" : "no", x));
+  LOG(LL_INFO,
+      ("Pin: %s, published: %s", mgos_gpio_str(pin, buf), res ? "yes" : "no"));
   (void) arg;
 }
 
@@ -93,9 +92,8 @@ enum mgos_app_init_result mgos_app_init(void) {
     mgos_gpio_set_mode(led_pin, MGOS_GPIO_MODE_OUTPUT);
     mgos_set_timer(1000, MGOS_TIMER_REPEAT, led_timer_cb, NULL);
   }
-  mgos_gpio_set_mode(mgos_sys_config_get_board_led3_pin(),
-                     MGOS_GPIO_MODE_OUTPUT);
-  mgos_gpio_write(mgos_sys_config_get_board_led3_pin(), 0);
+  mgos_gpio_set_mode(led_pin, MGOS_GPIO_MODE_OUTPUT);
+  mgos_gpio_write(led_pin, !mgos_sys_config_get_board_led1_active_high());
 
   /* Publish to MQTT on button press */
   int btn_pin = mgos_sys_config_get_board_btn1_pin();
