@@ -4,11 +4,13 @@
 #include "mgos_wifi.h"
 #endif
 
-static void led_timer_cb(void *arg) {
-  bool val = mgos_gpio_toggle(mgos_sys_config_get_board_led1_pin());
-  LOG(LL_INFO, ("%s uptime: %.2lf, RAM: %lu, %lu free", val ? "Tick" : "Tock",
-                mgos_uptime(), (unsigned long) mgos_get_heap_size(),
-                (unsigned long) mgos_get_free_heap_size()));
+static void timer_cb(void *arg) {
+  static bool s_tick_tock = false;
+  LOG(LL_INFO,
+      ("%s uptime: %.2lf, RAM: %lu, %lu free", (s_tick_tock ? "Tick" : "Tock"),
+       mgos_uptime(), (unsigned long) mgos_get_heap_size(),
+       (unsigned long) mgos_get_free_heap_size()));
+  s_tick_tock = !s_tick_tock;
   (void) arg;
 }
 
@@ -85,15 +87,16 @@ static void button_cb(int pin, void *arg) {
 
 enum mgos_app_init_result mgos_app_init(void) {
   char buf[8];
-  /* Blink built-in LED every second */
+
   int led_pin = mgos_sys_config_get_board_led1_pin();
   if (led_pin >= 0) {
     LOG(LL_INFO, ("LED pin %s", mgos_gpio_str(led_pin, buf)));
-    mgos_gpio_set_mode(led_pin, MGOS_GPIO_MODE_OUTPUT);
-    mgos_set_timer(1000, MGOS_TIMER_REPEAT, led_timer_cb, NULL);
+    mgos_gpio_setup_output(led_pin,
+                           mgos_sys_config_get_board_led1_active_high());
   }
-  mgos_gpio_set_mode(led_pin, MGOS_GPIO_MODE_OUTPUT);
-  mgos_gpio_write(led_pin, !mgos_sys_config_get_board_led1_active_high());
+
+  /* Simple repeating timer */
+  mgos_set_timer(1000, MGOS_TIMER_REPEAT, timer_cb, NULL);
 
   /* Publish to MQTT on button press */
   int btn_pin = mgos_sys_config_get_board_btn1_pin();
