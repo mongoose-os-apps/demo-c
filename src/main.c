@@ -37,9 +37,12 @@ static void net_cb(int ev, void *evd, void *arg) {
 #ifdef MGOS_HAVE_WIFI
 static void wifi_cb(int ev, void *evd, void *arg) {
   switch (ev) {
-    case MGOS_WIFI_EV_STA_DISCONNECTED:
-      LOG(LL_INFO, ("WiFi STA disconnected %p", arg));
+    case MGOS_WIFI_EV_STA_DISCONNECTED: {
+      struct mgos_wifi_sta_disconnected_arg *da =
+          (struct mgos_wifi_sta_disconnected_arg *) evd;
+      LOG(LL_INFO, ("WiFi STA disconnected, reason %d", da->reason));
       break;
+    }
     case MGOS_WIFI_EV_STA_CONNECTING:
       LOG(LL_INFO, ("WiFi STA connecting %p", arg));
       break;
