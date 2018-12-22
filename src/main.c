@@ -88,15 +88,8 @@ static void button_cb(int pin, void *arg) {
   (void) arg;
 }
 
-#include "mgos_license.h"
-
 enum mgos_app_init_result mgos_app_init(void) {
   char buf[8];
-
-#ifdef MGOS_LICENSE_API
-  char *x = mgos_lic_get_prop("ota");
-  LOG(LL_INFO, ("XXXX %s", (x ? x : "-")));
-#endif
 
   int led_pin = mgos_sys_config_get_board_led1_pin();
   if (led_pin >= 0) {
