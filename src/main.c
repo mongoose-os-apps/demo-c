@@ -74,6 +74,22 @@ static void wifi_cb(int ev, void *evd, void *arg) {
 }
 #endif /* MGOS_HAVE_WIFI */
 
+static void cloud_cb(int ev, void *evd, void *arg) {
+  struct mgos_cloud_arg *ca = (struct mgos_cloud_arg *) evd;
+  switch (ev) {
+    case MGOS_EVENT_CLOUD_CONNECTED: {
+      LOG(LL_INFO, ("Cloud connected (%d)", ca->type));
+      break;
+    }
+    case MGOS_EVENT_CLOUD_DISCONNECTED: {
+      LOG(LL_INFO, ("Cloud disconnected (%d)", ca->type));
+      break;
+    }
+  }
+
+  (void) arg;
+}
+
 static void button_cb(int pin, void *arg) {
   char topic[100];
   snprintf(topic, sizeof(topic), "/devices/%s/events",
@@ -125,6 +141,9 @@ enum mgos_app_init_result mgos_app_init(void) {
 #ifdef MGOS_HAVE_WIFI
   mgos_event_add_group_handler(MGOS_WIFI_EV_BASE, wifi_cb, NULL);
 #endif
+
+  mgos_event_add_handler(MGOS_EVENT_CLOUD_CONNECTED, cloud_cb, NULL);
+  mgos_event_add_handler(MGOS_EVENT_CLOUD_DISCONNECTED, cloud_cb, NULL);
 
   return MGOS_APP_INIT_SUCCESS;
 }
