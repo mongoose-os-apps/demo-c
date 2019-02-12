@@ -107,13 +107,6 @@ static void button_cb(int pin, void *arg) {
 enum mgos_app_init_result mgos_app_init(void) {
   char buf[8];
 
-  int led_pin = mgos_sys_config_get_board_led1_pin();
-  if (led_pin >= 0) {
-    LOG(LL_INFO, ("LED pin %s", mgos_gpio_str(led_pin, buf)));
-    mgos_gpio_setup_output(led_pin,
-                           mgos_sys_config_get_board_led1_active_high());
-  }
-
   /* Simple repeating timer */
   mgos_set_timer(1000, MGOS_TIMER_REPEAT, timer_cb, NULL);
 
