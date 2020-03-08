@@ -22,11 +22,5 @@ libs:
   - origin: https://github.com/mongoose-os-libs/boards
   - origin: https://github.com/mongoose-os-libs/demo-bundle
 
-conds:
-  - when: mos.platform == "esp32"
-    apply:
-      libs:
-        - origin: https://github.com/mongoose-os-libs/pppos
-
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
