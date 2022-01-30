@@ -88,6 +88,7 @@ static void cloud_cb(int ev, void *evd, void *arg) {
   }
 
   (void) arg;
+  (void) ca;
 }
 
 static void button_cb(int pin, void *arg) {
@@ -102,6 +103,9 @@ static void button_cb(int pin, void *arg) {
   LOG(LL_INFO,
       ("Pin: %s, published: %s", mgos_gpio_str(pin, buf), res ? "yes" : "no"));
   (void) arg;
+  (void) res;
+  (void) buf;
+  (void) pin;
 }
 
 enum mgos_app_init_result mgos_app_init(void) {
@@ -137,6 +141,8 @@ enum mgos_app_init_result mgos_app_init(void) {
 
   mgos_event_add_handler(MGOS_EVENT_CLOUD_CONNECTED, cloud_cb, NULL);
   mgos_event_add_handler(MGOS_EVENT_CLOUD_DISCONNECTED, cloud_cb, NULL);
+
+  (void) buf;
 
   return MGOS_APP_INIT_SUCCESS;
 }
